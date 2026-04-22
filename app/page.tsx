@@ -37,15 +37,23 @@ export default function Page() {
               <div className="hidden gap-10 md:flex">
                 <Meta label="Role" value="Product design" />
                 <Meta label="Platform" value="iOS and Android" />
-                <Meta label="Users" value="Route drivers" />
               </div>
-              <Link
-                href="/mockups"
-                className="inline-flex items-center gap-1.5 rounded-full bg-[color:var(--color-ink)] px-4 py-2.5 text-[13px] font-semibold text-white transition hover:bg-[color:var(--color-ink-2)]"
-              >
-                Download mockups
-                <Icon.ChevronRight width={14} height={14} />
-              </Link>
+              <div className="flex items-center gap-2">
+                <Link
+                  href="/prototype"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-[color:var(--color-hairline)] bg-[color:var(--color-surface)] px-4 py-2.5 text-[13px] font-semibold text-[color:var(--color-ink)] transition hover:bg-[color:var(--color-bg)]"
+                >
+                  Prototype
+                  <Icon.ChevronRight width={14} height={14} />
+                </Link>
+                <Link
+                  href="/mockups"
+                  className="inline-flex items-center gap-1.5 rounded-full bg-[color:var(--color-ink)] px-4 py-2.5 text-[13px] font-semibold text-white transition hover:bg-[color:var(--color-ink-2)]"
+                >
+                  Mockups
+                  <Icon.ChevronRight width={14} height={14} />
+                </Link>
+              </div>
             </div>
           </div>
 

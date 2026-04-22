@@ -1,4 +1,7 @@
+"use client";
+
 import { Icon } from "./icons";
+import { useNav } from "./NavContext";
 
 export type TimelineNode = {
   title: string;
@@ -12,12 +15,21 @@ export type TimelineNode = {
 type Node = TimelineNode;
 
 export function Timeline({ nodes }: { nodes: readonly Node[] }) {
+  const nav = useNav();
   return (
     <div className="flex flex-col">
       {nodes.map((n, i) => {
         const last = i === nodes.length - 1;
+        const clickable = nav && n.status !== "done";
         return (
-          <div key={i} className="relative flex gap-3 pl-1">
+          <div
+            key={i}
+            onClick={clickable ? () => nav!.go("stop-detail") : undefined}
+            className={
+              "relative flex gap-3 pl-1 " +
+              (clickable ? "cursor-pointer rounded-lg -mx-2 px-2 py-1 transition active:bg-[color:var(--color-bg)]" : "")
+            }
+          >
             <div className="relative w-5 flex-shrink-0 flex flex-col items-center">
               <Dot status={n.status} />
               {!last && (

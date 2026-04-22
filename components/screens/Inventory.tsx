@@ -1,6 +1,9 @@
+"use client";
+
 import { Icon } from "../icons";
 import { BottomTabs } from "../BottomTabs";
 import { LargeTitle, StatusBar } from "../Phone";
+import { useNav } from "../NavContext";
 
 type InventoryItem = {
   name: string;
@@ -27,9 +30,18 @@ const itemsAllMatched: InventoryItem[] = itemsWithDiscrepancy.map((i) => ({
 export function InventoryScreen({
   verified: allMatched = false,
 }: { verified?: boolean } = {}) {
-  const items = allMatched ? itemsAllMatched : itemsWithDiscrepancy;
+  const nav = useNav();
+  const resolvedAllMatched = nav ? nav.state.inventoryVerified : allMatched;
+  const items = resolvedAllMatched ? itemsAllMatched : itemsWithDiscrepancy;
   const matched = items.filter((i) => i.counted === i.expected).length;
   const progress = Math.round((matched / items.length) * 100);
+
+  function handleConfirm() {
+    if (nav) {
+      nav.patchState({ inventoryVerified: true });
+      nav.go("home");
+    }
+  }
 
   return (
     <>
@@ -55,7 +67,7 @@ export function InventoryScreen({
                 <span
                   className="h-[6px] w-[6px] rounded-full"
                   style={{
-                    background: allMatched
+                    background: resolvedAllMatched
                       ? "var(--color-brand)"
                       : "var(--color-caution)",
                   }}
@@ -63,12 +75,12 @@ export function InventoryScreen({
                 <span
                   className="text-[12.5px] font-semibold"
                   style={{
-                    color: allMatched
+                    color: resolvedAllMatched
                       ? "var(--color-brand-ink)"
                       : "var(--color-caution-ink)",
                   }}
                 >
-                  {allMatched ? "All items matched" : "1 discrepancy found"}
+                  {resolvedAllMatched ? "All items matched" : "1 discrepancy found"}
                 </span>
               </div>
               <div className="mt-1.5 flex items-baseline gap-1.5 tnum">
@@ -165,7 +177,7 @@ export function InventoryScreen({
       {/* Sticky confirm */}
       <div className="border-t border-[color:var(--color-hairline)] bg-[color:var(--color-surface)] px-4 pt-3 pb-3">
         <div className="mb-2 flex items-center justify-between">
-          {allMatched ? (
+          {resolvedAllMatched ? (
             <span className="text-[13px] text-[color:var(--color-ink-2)]">
               <span className="font-semibold text-[color:var(--color-brand-2)]">
                 Everything checks out.
@@ -188,6 +200,7 @@ export function InventoryScreen({
           )}
         </div>
         <button
+          onClick={handleConfirm}
           className="pill-cta text-white"
           style={{ background: "var(--color-brand)" }}
         >

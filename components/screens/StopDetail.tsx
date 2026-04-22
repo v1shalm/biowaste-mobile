@@ -1,16 +1,23 @@
+"use client";
+
 import { Icon } from "../icons";
 import { StatusBar } from "../Phone";
 import { StreetMap } from "../StreetMap";
 import { Avatar, IconTile } from "../Tile";
+import { useNav } from "../NavContext";
 
 export function StopDetailScreen() {
+  const nav = useNav();
   return (
     <>
       <StatusBar />
 
       {/* Top bar */}
       <div className="flex items-center justify-between px-4 pt-1 pb-3">
-        <button className="flex h-10 w-10 items-center justify-center rounded-full bg-[color:var(--color-surface)] shadow-[var(--shadow-lift)] transition-transform active:scale-95">
+        <button
+          onClick={() => nav?.back()}
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-[color:var(--color-surface)] shadow-[var(--shadow-lift)] transition-transform active:scale-95"
+        >
           <Icon.ChevronLeft width={18} height={18} />
         </button>
         <div className="text-center">
@@ -67,7 +74,10 @@ export function StopDetailScreen() {
                 123 Medical Center Blvd, Dock 3
               </div>
             </div>
-            <button className="flex-shrink-0 rounded-full active:scale-95 transition">
+            <button
+              onClick={() => nav?.go("map")}
+              className="flex-shrink-0 rounded-full active:scale-95 transition"
+            >
               <IconTile tone="brand" size="lg" shape="circle">
                 <Icon.Nav width={17} height={17} />
               </IconTile>
@@ -179,6 +189,7 @@ export function StopDetailScreen() {
       {/* Sticky CTA */}
       <div className="border-t border-[color:var(--color-hairline)] bg-[color:var(--color-surface)] px-4 pt-3 pb-3">
         <button
+          onClick={() => nav?.go("completed")}
           className="pill-cta text-white"
           style={{
             background:

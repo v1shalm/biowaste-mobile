@@ -1,14 +1,21 @@
+"use client";
+
 import { Icon } from "../icons";
 import { StatusBar } from "../Phone";
 import { tileStyle } from "../Tile";
+import { useNav } from "../NavContext";
 
 export function CompletedScreen() {
+  const nav = useNav();
   return (
     <>
       <StatusBar />
 
       <div className="flex items-center justify-between px-4 pt-1 pb-2">
-        <button className="flex h-10 w-10 items-center justify-center rounded-full bg-[color:var(--color-surface)] shadow-[var(--shadow-lift)] transition-transform active:scale-95">
+        <button
+          onClick={() => nav?.back()}
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-[color:var(--color-surface)] shadow-[var(--shadow-lift)] transition-transform active:scale-95"
+        >
           <Icon.ChevronLeft width={18} height={18} />
         </button>
         <div className="text-[13px] font-semibold text-[color:var(--color-ink-2)]">
@@ -107,13 +114,17 @@ export function CompletedScreen() {
       <div className="border-t border-[color:var(--color-hairline)] bg-[color:var(--color-surface)] px-4 pt-3 pb-3">
         <div className="grid grid-cols-[1fr_auto] gap-2">
           <button
+            onClick={() => nav?.go("stop-detail")}
             className="pill-cta text-white"
             style={{ background: "var(--color-brand)" }}
           >
             Start next stop
             <Icon.ChevronRight width={18} height={18} />
           </button>
-          <button className="flex h-14 px-5 items-center justify-center rounded-2xl bg-[color:var(--color-bg)] text-[14.5px] font-semibold">
+          <button
+            onClick={() => nav?.go("stops")}
+            className="flex h-14 px-5 items-center justify-center rounded-2xl bg-[color:var(--color-bg)] text-[14.5px] font-semibold transition-transform active:scale-95"
+          >
             Break
           </button>
         </div>

@@ -1,10 +1,16 @@
+"use client";
+
 import { Icon } from "../icons";
 import { BottomTabs } from "../BottomTabs";
 import { StatusBar } from "../Phone";
 import { StreetMap } from "../StreetMap";
 import { Avatar, IconTile } from "../Tile";
+import { useNav } from "../NavContext";
 
 export function HomeScreen({ verified = false }: { verified?: boolean } = {}) {
+  const nav = useNav();
+  const isVerified = nav ? nav.state.inventoryVerified : verified;
+
   return (
     <>
       <StatusBar />
@@ -34,7 +40,13 @@ export function HomeScreen({ verified = false }: { verified?: boolean } = {}) {
 
       <div className="flex flex-1 flex-col overflow-hidden">
         {/* Map card */}
-        <div className="mx-4 relative overflow-hidden rounded-2xl shadow-[var(--shadow-lift)]">
+        <div
+          onClick={nav ? () => nav.go("map") : undefined}
+          className={
+            "mx-4 relative overflow-hidden rounded-2xl shadow-[var(--shadow-lift)] " +
+            (nav ? "cursor-pointer" : "")
+          }
+        >
           <StreetMap height={230} variant="preview">
             <div className="absolute inset-0 pointer-events-none">
               {/* Driver (current position) */}
@@ -168,7 +180,7 @@ export function HomeScreen({ verified = false }: { verified?: boolean } = {}) {
 
         {/* Status row — either "Inventory pending" (actionable) or "Verified" (confirmation) */}
         <div className="px-4 pt-3">
-          {verified ? (
+          {isVerified ? (
             <div className="card flex w-full items-center gap-3 px-3.5 py-3">
               <IconTile tone="brand" size="md">
                 <Icon.Check width={17} height={17} />
@@ -188,7 +200,10 @@ export function HomeScreen({ verified = false }: { verified?: boolean } = {}) {
               />
             </div>
           ) : (
-            <button className="card flex w-full items-center gap-3 px-3.5 py-3 text-left transition active:scale-[0.99]">
+            <button
+              onClick={() => nav?.go("inventory")}
+              className="card flex w-full items-center gap-3 px-3.5 py-3 text-left transition active:scale-[0.99]"
+            >
               <IconTile tone="caution" size="md">
                 <Icon.Alert width={17} height={17} />
               </IconTile>
@@ -211,12 +226,13 @@ export function HomeScreen({ verified = false }: { verified?: boolean } = {}) {
 
         <div className="mt-auto px-4 pb-4 pt-3">
           <button
+            onClick={() => nav?.go(isVerified ? "map" : "inventory")}
             className="pill-cta text-white"
             data-brand="true"
             style={{ background: "var(--color-brand)" }}
           >
             <span className="relative z-10 inline-flex items-center gap-2">
-              {verified ? (
+              {isVerified ? (
                 <>
                   <Icon.Nav width={17} height={17} />
                   Start route

@@ -1,5 +1,8 @@
+"use client";
+
 import { Icon } from "./icons";
 import { HomeIndicator } from "./Phone";
+import { useNav, type PrototypeScreen } from "./NavContext";
 
 type Tab = "home" | "stops" | "inventory" | "support";
 
@@ -15,19 +18,27 @@ const tabs: {
   { key: "support", label: "Help", Icon: Icon.Headset },
 ];
 
+const tabToScreen: Record<Tab, PrototypeScreen> = {
+  home: "home",
+  stops: "stops",
+  inventory: "inventory",
+  support: "support",
+};
+
 export function BottomTabs({ active }: { active: Tab }) {
+  const nav = useNav();
+
   return (
     <div className="mt-auto">
-      <div
-        className="border-t border-[color:var(--color-hairline)] bg-[color:var(--color-surface)]"
-      >
+      <div className="border-t border-[color:var(--color-hairline)] bg-[color:var(--color-surface)]">
         <div className="grid grid-cols-4 pt-2.5">
           {tabs.map(({ key, label, Icon: I, badge }) => {
             const isActive = key === active;
             return (
               <button
                 key={key}
-                className="group flex flex-col items-center gap-1 py-1 relative"
+                onClick={() => nav?.go(tabToScreen[key])}
+                className="group flex flex-col items-center gap-1 py-1 relative transition-transform active:scale-95"
               >
                 <div className="relative">
                   <I

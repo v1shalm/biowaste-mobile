@@ -107,13 +107,22 @@ export default function MockupsPage() {
               presentations.
             </p>
           </div>
-          <Link
-            href="/"
-            className="inline-flex items-center gap-1.5 rounded-full border border-[color:var(--color-hairline)] bg-[color:var(--color-surface)] px-4 py-2.5 text-[13px] font-semibold text-[color:var(--color-ink)] transition hover:bg-[color:var(--color-bg)]"
-          >
-            <Icon.ChevronLeft width={14} height={14} />
-            Back to showcase
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-1.5 rounded-full border border-[color:var(--color-hairline)] bg-[color:var(--color-surface)] px-4 py-2.5 text-[13px] font-semibold text-[color:var(--color-ink)] transition hover:bg-[color:var(--color-bg)]"
+            >
+              <Icon.ChevronLeft width={14} height={14} />
+              Showcase
+            </Link>
+            <Link
+              href="/prototype"
+              className="inline-flex items-center gap-1.5 rounded-full bg-[color:var(--color-ink)] px-4 py-2.5 text-[13px] font-semibold text-white transition hover:bg-[color:var(--color-ink-2)]"
+            >
+              Prototype
+              <Icon.ChevronRight width={14} height={14} />
+            </Link>
+          </div>
         </div>
       </header>
 

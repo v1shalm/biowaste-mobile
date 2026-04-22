@@ -1,9 +1,13 @@
+"use client";
+
 import { Icon } from "../icons";
 import { StatusBar } from "../Phone";
 import { StreetMap } from "../StreetMap";
 import { tileStyle } from "../Tile";
+import { useNav } from "../NavContext";
 
 export function MapScreen() {
+  const nav = useNav();
   return (
     <>
       <div className="relative flex-1 overflow-hidden">
@@ -62,7 +66,10 @@ export function MapScreen() {
 
         {/* Top search */}
         <div className="absolute top-[56px] left-4 right-4 z-30 flex items-center gap-3">
-          <button className="flex h-11 w-11 items-center justify-center rounded-full bg-[color:var(--color-surface)] shadow-[var(--shadow-lift)] transition-transform active:scale-95">
+          <button
+            onClick={() => nav?.back()}
+            className="flex h-11 w-11 items-center justify-center rounded-full bg-[color:var(--color-surface)] shadow-[var(--shadow-lift)] transition-transform active:scale-95"
+          >
             <Icon.ChevronLeft width={18} height={18} />
           </button>
 
@@ -138,6 +145,7 @@ export function MapScreen() {
 
             <div className="mt-4 grid grid-cols-[1fr_auto] gap-2 pb-4">
               <button
+                onClick={() => nav?.go("stop-detail")}
                 className="pill-cta text-white"
                 style={{ background: "var(--color-brand)" }}
               >
