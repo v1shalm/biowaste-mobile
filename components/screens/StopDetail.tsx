@@ -10,7 +10,7 @@ export function StopDetailScreen() {
 
       {/* Top bar */}
       <div className="flex items-center justify-between px-4 pt-1 pb-3">
-        <button className="flex h-10 w-10 items-center justify-center rounded-full bg-[color:var(--color-surface)] shadow-[var(--shadow-lift)]">
+        <button className="flex h-10 w-10 items-center justify-center rounded-full bg-[color:var(--color-surface)] shadow-[var(--shadow-lift)] transition-transform active:scale-95">
           <Icon.ChevronLeft width={18} height={18} />
         </button>
         <div className="text-center">
@@ -21,7 +21,7 @@ export function StopDetailScreen() {
             Memorial Hospital
           </div>
         </div>
-        <button className="flex h-10 w-10 items-center justify-center rounded-full bg-[color:var(--color-surface)] shadow-[var(--shadow-lift)]">
+        <button className="flex h-10 w-10 items-center justify-center rounded-full bg-[color:var(--color-surface)] shadow-[var(--shadow-lift)] transition-transform active:scale-95">
           <Icon.Menu width={18} height={18} />
         </button>
       </div>
@@ -83,22 +83,37 @@ export function StopDetailScreen() {
 
         {/* Site contact card */}
         <div className="card mt-3 p-4">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3.5">
             <Avatar tone="warm" size="lg" initials="RG" />
             <div className="flex-1 min-w-0">
               <div className="text-[12px] text-[color:var(--color-ink-3)]">
                 Site contact
               </div>
-              <div className="text-[15px] font-semibold">Rosa Garcia</div>
-              <div className="text-[12px] text-[color:var(--color-ink-2)] mt-0.5">
-                Extension <span className="tnum font-semibold">4410</span> · security gate
+              <div className="mt-0.5 text-[15.5px] font-semibold leading-tight tracking-[-0.01em] truncate">
+                Rosa Garcia
+              </div>
+              <div className="mt-1 flex items-center gap-1.5 text-[12px] text-[color:var(--color-ink-2)] min-w-0">
+                <span className="truncate">
+                  Ext. <span className="tnum font-semibold text-[color:var(--color-ink)]">4410</span> · Security gate
+                </span>
               </div>
             </div>
-            <div className="flex gap-2">
-              <button className="flex h-10 w-10 items-center justify-center rounded-full bg-[color:var(--color-bg)]">
-                <Icon.Phone width={16} height={16} />
+            <div className="flex flex-shrink-0 gap-1.5">
+              <button
+                className="flex h-10 w-10 items-center justify-center rounded-full transition-transform active:scale-95"
+                style={{ background: "var(--color-brand-50)" }}
+                aria-label="Call Rosa Garcia"
+              >
+                <Icon.Phone
+                  width={16}
+                  height={16}
+                  style={{ color: "var(--color-brand-2)" }}
+                />
               </button>
-              <button className="flex h-10 w-10 items-center justify-center rounded-full bg-[color:var(--color-bg)]">
+              <button
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-[color:var(--color-bg)] transition-transform active:scale-95"
+                aria-label="Message Rosa Garcia"
+              >
                 <Icon.Message width={16} height={16} />
               </button>
             </div>

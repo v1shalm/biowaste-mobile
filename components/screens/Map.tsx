@@ -62,7 +62,7 @@ export function MapScreen() {
 
         {/* Top search */}
         <div className="absolute top-[56px] left-4 right-4 z-30 flex items-center gap-3">
-          <button className="flex h-11 w-11 items-center justify-center rounded-full bg-[color:var(--color-surface)] shadow-[var(--shadow-lift)]">
+          <button className="flex h-11 w-11 items-center justify-center rounded-full bg-[color:var(--color-surface)] shadow-[var(--shadow-lift)] transition-transform active:scale-95">
             <Icon.ChevronLeft width={18} height={18} />
           </button>
 
@@ -161,7 +161,7 @@ export function MapScreen() {
 
 function MapButton({ children }: { children: React.ReactNode }) {
   return (
-    <button className="flex h-11 w-11 items-center justify-center rounded-full bg-[color:var(--color-surface)] shadow-[var(--shadow-lift)]">
+    <button className="flex h-11 w-11 items-center justify-center rounded-full bg-[color:var(--color-surface)] shadow-[var(--shadow-lift)] transition-transform active:scale-95">
       {children}
     </button>
   );

@@ -22,7 +22,7 @@ export function HomeScreen({ verified = false }: { verified?: boolean } = {}) {
             </div>
           </div>
         </div>
-        <button className="relative flex h-10 w-10 items-center justify-center rounded-full bg-[color:var(--color-surface)] shadow-[var(--shadow-lift)]">
+        <button className="relative flex h-10 w-10 items-center justify-center rounded-full bg-[color:var(--color-surface)] shadow-[var(--shadow-lift)] transition-transform active:scale-95">
           <Icon.Alert
             width={18}
             height={18}
@@ -105,13 +105,13 @@ export function HomeScreen({ verified = false }: { verified?: boolean } = {}) {
             {/* Map controls */}
             <div className="absolute top-3 right-3 z-10 flex flex-col gap-1.5">
               <button
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-white"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-white transition-transform active:scale-95"
                 style={{ boxShadow: "var(--shadow-lift)" }}
               >
                 <Icon.Plus width={16} height={16} />
               </button>
               <button
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-white"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-white transition-transform active:scale-95"
                 style={{ boxShadow: "var(--shadow-lift)" }}
               >
                 <div className="h-2 w-2 rounded-full bg-[color:var(--color-info)]" />

@@ -42,9 +42,9 @@ export function Timeline({ nodes }: { nodes: readonly Node[] }) {
               style={{ opacity: n.status === "upcoming" ? 0.85 : 1 }}
             >
               <div className="flex items-start justify-between gap-2">
-                <div className="min-w-0">
+                <div className="min-w-0 flex-1">
                   <div
-                    className="text-[12px]"
+                    className="text-[12px] truncate"
                     style={{
                       color:
                         n.status === "upcoming"
@@ -57,7 +57,7 @@ export function Timeline({ nodes }: { nodes: readonly Node[] }) {
                   {n.address && (
                     <div
                       className={
-                        "text-[15px] leading-tight mt-0.5 " +
+                        "text-[15px] leading-tight mt-0.5 truncate " +
                         (n.status === "upcoming" ? "font-medium" : "font-semibold")
                       }
                     >

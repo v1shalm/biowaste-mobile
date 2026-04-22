@@ -86,10 +86,10 @@ export function StopsScreen({
         subtitle="Route R-402 · 11 stops · 84 miles"
         right={
           <>
-            <button className="flex h-9 w-9 items-center justify-center rounded-full row-hover">
+            <button className="flex h-9 w-9 items-center justify-center rounded-full row-hover transition-transform active:scale-95">
               <Icon.Search width={18} height={18} />
             </button>
-            <button className="flex h-9 w-9 items-center justify-center rounded-full row-hover">
+            <button className="flex h-9 w-9 items-center justify-center rounded-full row-hover transition-transform active:scale-95">
               <Icon.Menu width={20} height={20} />
             </button>
           </>

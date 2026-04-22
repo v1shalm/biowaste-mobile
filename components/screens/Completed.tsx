@@ -8,7 +8,7 @@ export function CompletedScreen() {
       <StatusBar />
 
       <div className="flex items-center justify-between px-4 pt-1 pb-2">
-        <button className="flex h-10 w-10 items-center justify-center rounded-full bg-[color:var(--color-surface)] shadow-[var(--shadow-1)]">
+        <button className="flex h-10 w-10 items-center justify-center rounded-full bg-[color:var(--color-surface)] shadow-[var(--shadow-lift)] transition-transform active:scale-95">
           <Icon.ChevronLeft width={18} height={18} />
         </button>
         <div className="text-[13px] font-semibold text-[color:var(--color-ink-2)]">
