@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { Icon } from "@/components/icons";
 import { Mockup } from "@/components/Mockup";
+import { MockupDuo } from "@/components/MockupDuo";
 import { MockupTrio } from "@/components/MockupTrio";
 import { HomeScreen } from "@/components/screens/Home";
 import { StopsScreen } from "@/components/screens/Stops";
@@ -33,6 +34,26 @@ const mockups: { title: string; screen: ReactNode }[] = [
   { title: "Navigation", screen: <MapScreen /> },
   { title: "Stop complete", screen: <CompletedScreen /> },
   { title: "Support", screen: <SupportScreen /> },
+];
+
+const duos: {
+  title: string;
+  screens: [ReactNode, ReactNode];
+}[] = [
+  {
+    title: "Pair — Day at a glance",
+    screens: [
+      <HomeScreen key="h" verified />,
+      <StopsScreen key="s" />,
+    ],
+  },
+  {
+    title: "Pair — Working the stop",
+    screens: [
+      <StopDetailScreen key="sd" />,
+      <CompletedScreen key="c" />,
+    ],
+  },
 ];
 
 const trios: {
@@ -97,6 +118,34 @@ export default function MockupsPage() {
       </header>
 
       <div className="mx-auto max-w-[1440px] px-10 pb-20">
+        {/* Two-screen pairings */}
+        <div className="mb-8 flex items-baseline justify-between">
+          <div>
+            <div className="text-[12.5px] font-semibold text-[color:var(--color-ink-3)]">
+              Two-screen pairings
+            </div>
+            <h2 className="mt-1 text-[22px] font-bold tracking-[-0.02em]">
+              Side by side
+            </h2>
+          </div>
+          <span className="tnum text-[12px] text-[color:var(--color-ink-3)]">
+            {duos.length} pairs
+          </span>
+        </div>
+
+        <div className="mb-16 grid grid-cols-1 gap-8">
+          {duos.map((d, i) => (
+            <MockupDuo
+              key={d.title}
+              title={`${String(i + 1).padStart(2, "0")} · ${d.title}`}
+              screens={[
+                <PhoneFrame key="a">{d.screens[0]}</PhoneFrame>,
+                <PhoneFrame key="b">{d.screens[1]}</PhoneFrame>,
+              ]}
+            />
+          ))}
+        </div>
+
         {/* Flow pairings — three-screen trios */}
         <div className="mb-8 flex items-baseline justify-between">
           <div>
@@ -150,7 +199,7 @@ export default function MockupsPage() {
         <div className="mt-16 flex flex-wrap items-center justify-between gap-4 border-t border-[color:var(--color-hairline)] pt-6 text-[color:var(--color-ink-3)]">
           <span className="text-[13px] font-semibold">End of gallery</span>
           <span className="tnum text-[12.5px]">
-            {mockups.length + trios.length} mockups · PNG export at 2×
+            {mockups.length + trios.length + duos.length} mockups · PNG export at 2×
           </span>
         </div>
       </div>
