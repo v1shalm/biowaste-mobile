@@ -1,81 +1,56 @@
+"use client";
+
 import { Icon } from "../icons";
 import { BottomTabs } from "../BottomTabs";
 import { LargeTitle, StatusBar } from "../Phone";
-import { Timeline } from "../Timeline";
+import { Timeline, type TimelineNode } from "../Timeline";
+import { useNav } from "../NavContext";
+
+type StopSeed = {
+  address: string;
+  time: string;
+  meta: string;
+  badge: "pickup" | "delivery" | "both";
+};
+
+const stopSeeds: StopSeed[] = [
+  { address: "Memorial Hospital", time: "8:12 AM", meta: "Dock 3 · 140 kg", badge: "both" },
+  { address: "BioLab Inc.", time: "10:15 AM", meta: "40 kg · loading bay B", badge: "pickup" },
+  { address: "Eastside Dental Group", time: "11:45 AM", meta: "Suite 4", badge: "pickup" },
+  { address: "Riverside Clinic", time: "12:30 PM", meta: "60 kg · dock 2", badge: "both" },
+];
+
+function buildNodes(completed: number): TimelineNode[] {
+  return stopSeeds.map((s, i) => {
+    const n = i + 1;
+    let status: TimelineNode["status"];
+    let title: string;
+    let meta = s.meta;
+    if (i < completed) {
+      status = "done";
+      title = `Stop 0${n} · Complete`;
+      if (i === 0) meta = "Signed by R. Garcia";
+    } else if (i === completed) {
+      status = "active";
+      title = `Stop 0${n} · Up next`;
+    } else {
+      status = "upcoming";
+      title = `Stop 0${n}`;
+    }
+    return { title, address: s.address, time: s.time, meta, status, badge: s.badge };
+  });
+}
 
 export function StopsScreen({
   midService = false,
 }: { midService?: boolean } = {}) {
-  const completed = midService ? 2 : 0;
-  const nodes = midService
-    ? ([
-        {
-          title: "Stop 01 · Complete",
-          address: "Memorial Hospital",
-          time: "8:12 AM",
-          meta: "Signed by R. Garcia",
-          status: "done" as const,
-          badge: "both" as const,
-        },
-        {
-          title: "Stop 02 · Complete",
-          address: "BioLab Inc.",
-          time: "10:21 AM",
-          meta: "40 kg picked up",
-          status: "done" as const,
-          badge: "pickup" as const,
-        },
-        {
-          title: "Stop 03 · Up next",
-          address: "Eastside Dental Group",
-          time: "11:45 AM",
-          meta: "Suite 4",
-          status: "active" as const,
-          badge: "pickup" as const,
-        },
-        {
-          title: "Stop 04",
-          address: "Riverside Clinic",
-          time: "12:30 PM",
-          meta: "60 kg · dock 2",
-          status: "upcoming" as const,
-          badge: "both" as const,
-        },
-      ] as const)
-    : ([
-        {
-          title: "Stop 01 · Up next",
-          address: "Memorial Hospital",
-          time: "8:12 AM",
-          meta: "Dock 3 · 140 kg",
-          status: "active" as const,
-          badge: "both" as const,
-        },
-        {
-          title: "Stop 02",
-          address: "BioLab Inc.",
-          time: "10:15 AM",
-          meta: "40 kg · loading bay B",
-          status: "upcoming" as const,
-          badge: "pickup" as const,
-        },
-        {
-          title: "Stop 03",
-          address: "Eastside Dental Group",
-          time: "11:45 AM",
-          meta: "Suite 4",
-          status: "upcoming" as const,
-          badge: "pickup" as const,
-        },
-        {
-          title: "Stop 04",
-          address: "Riverside Clinic",
-          time: "12:30 PM",
-          meta: "60 kg · dock 2",
-          status: "upcoming" as const,
-          badge: "both" as const,
-        },
-      ] as const);
+  const nav = useNav();
+  const completed = nav
+    ? nav.state.stopsCompleted
+    : midService
+    ? 2
+    : 0;
+  const nodes = buildNodes(completed);
 
   return (
     <>
@@ -86,10 +61,28 @@ export function StopsScreen({
         subtitle="Route R-402 · 11 stops · 84 miles"
         right={
           <>
-            <button className="flex h-9 w-9 items-center justify-center rounded-full row-hover transition-transform active:scale-95">
+            <button
+              onClick={() =>
+                nav?.showToast({
+                  title: "Search stops",
+                  sub: "Find a site by name or address",
+                  tone: "info",
+                })
+              }
+              className="flex h-9 w-9 items-center justify-center rounded-full row-hover transition-transform active:scale-95"
+            >
               <Icon.Search width={18} height={18} />
             </button>
-            <button className="flex h-9 w-9 items-center justify-center rounded-full row-hover transition-transform active:scale-95">
+            <button
+              onClick={() =>
+                nav?.showToast({
+                  title: "Route options",
+                  sub: "Reorder, skip, or re-optimise",
+                  tone: "info",
+                })
+              }
+              className="flex h-9 w-9 items-center justify-center rounded-full row-hover transition-transform active:scale-95"
+            >
               <Icon.Menu width={20} height={20} />
             </button>
           </>
@@ -148,9 +141,18 @@ export function StopsScreen({
 
           <Timeline nodes={nodes} />
 
-          <button className="mt-1 flex w-full items-center justify-between rounded-xl border border-dashed border-[color:var(--color-border)] px-4 py-3 text-left">
+          <button
+            onClick={() =>
+              nav?.showToast({
+                title: "Full route loaded",
+                sub: "All 11 stops through 2:30 PM",
+                tone: "info",
+              })
+            }
+            className="mt-1 flex w-full items-center justify-between rounded-xl border border-dashed border-[color:var(--color-border)] px-4 py-3 text-left transition active:bg-[color:var(--color-bg)]"
+          >
             <span className="text-[13.5px] font-medium text-[color:var(--color-ink-2)]">
-              Show 7 more stops
+              Show {11 - nodes.length} more stops
             </span>
             <Icon.ChevronDown
               width={15}

@@ -1,9 +1,13 @@
+"use client";
+
 import { Icon } from "../icons";
 import { BottomTabs } from "../BottomTabs";
 import { LargeTitle, StatusBar } from "../Phone";
 import { IconTile, type TileTone } from "../Tile";
+import { useNav } from "../NavContext";
 
 export function SupportScreen() {
+  const nav = useNav();
   return (
     <>
       <StatusBar />
@@ -16,6 +20,13 @@ export function SupportScreen() {
       <div className="flex-1 overflow-y-auto no-scrollbar px-4 pb-4">
         {/* Emergency */}
         <button
+          onClick={() =>
+            nav?.showToast({
+              title: "Hazard crew dispatched",
+              sub: "ETA 6 min · reference INC-0143",
+              tone: "hazard",
+            })
+          }
           className="flex w-full items-center justify-between overflow-hidden rounded-2xl p-4 text-left active:scale-[0.99] transition shadow-[var(--shadow-lift)]"
           style={{ background: "var(--color-ink)" }}
         >
@@ -48,17 +59,38 @@ export function SupportScreen() {
             icon={<Icon.Phone width={17} height={17} />}
             title="Call dispatch"
             meta="Live · 1 min wait · Rosa M."
+            onClick={() =>
+              nav?.showToast({
+                title: "Calling dispatch…",
+                sub: "Rosa M. will pick up shortly",
+                tone: "brand",
+              })
+            }
           />
           <ContactRow
             accent
             icon={<Icon.Message width={17} height={17} />}
             title="Message operations"
             meta="Live · replies in 3 min · 4 agents"
+            onClick={() =>
+              nav?.showToast({
+                title: "Operations chat open",
+                sub: "Type a question — replies within 3 min",
+                tone: "info",
+              })
+            }
           />
           <ContactRow
             icon={<Icon.Mail width={17} height={17} />}
             title="Email compliance"
             meta="Logged to incidents · 24-hour reply"
+            onClick={() =>
+              nav?.showToast({
+                title: "Drafting compliance email",
+                sub: "Reference: route R-402, stop 01",
+                tone: "info",
+              })
+            }
           />
         </div>
 
@@ -75,24 +107,52 @@ export function SupportScreen() {
             label="I'm stuck"
             sub="Traffic or access"
             icon={<Icon.Alert width={17} height={17} />}
+            onClick={() =>
+              nav?.showToast({
+                title: "Delay logged",
+                sub: "Dispatch rerouting next driver",
+                tone: "hazard",
+              })
+            }
           />
           <ActionCard
             tone="caution"
             label="Vehicle issue"
             sub="Truck T-11"
             icon={<Icon.Truck width={17} height={17} />}
+            onClick={() =>
+              nav?.showToast({
+                title: "Fleet alerted",
+                sub: "Mechanic paged for T-11",
+                tone: "caution",
+              })
+            }
           />
           <ActionCard
             tone="info"
             label="Missing item"
             sub="Report or reorder"
             icon={<Icon.Box width={17} height={17} />}
+            onClick={() =>
+              nav?.showToast({
+                title: "Reorder requested",
+                sub: "Items will be at depot by tomorrow",
+                tone: "info",
+              })
+            }
           />
           <ActionCard
             tone="brand"
             label="Shift handoff"
             sub="End or transfer"
             icon={<Icon.Route width={17} height={17} />}
+            onClick={() =>
+              nav?.showToast({
+                title: "Handoff prepared",
+                sub: "Route summary queued for next driver",
+                tone: "brand",
+              })
+            }
           />
         </div>
 
@@ -101,7 +161,16 @@ export function SupportScreen() {
           <span className="text-[13px] font-semibold text-[color:var(--color-ink)]">
             Recent tickets
           </span>
-          <button className="inline-flex items-center gap-0.5 text-[13px] font-semibold text-[color:var(--color-info)]">
+          <button
+            onClick={() =>
+              nav?.showToast({
+                title: "All tickets",
+                sub: "14 in the last 30 days · 0 open",
+                tone: "info",
+              })
+            }
+            className="inline-flex items-center gap-0.5 text-[13px] font-semibold text-[color:var(--color-info)] transition-transform active:scale-95"
+          >
             See all
             <Icon.ChevronRight width={12} height={12} />
           </button>
@@ -122,15 +191,20 @@ function ContactRow({
   title,
   meta,
   accent,
+  onClick,
 }: {
   icon: React.ReactNode;
   title: string;
   meta: string;
   accent?: boolean;
+  onClick?: () => void;
 }) {
   const live = meta.startsWith("Live");
   return (
-    <button className="group-row flex w-full items-center gap-3 px-4 py-3.5 text-left active:bg-[color:var(--color-bg)] transition">
+    <button
+      onClick={onClick}
+      className="group-row flex w-full items-center gap-3 px-4 py-3.5 text-left active:bg-[color:var(--color-bg)] transition"
+    >
       <div
         className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[color:var(--color-bg)]"
       >
@@ -173,14 +247,19 @@ function ActionCard({
   label,
   sub,
   icon,
+  onClick,
 }: {
   tone: TileTone;
   label: string;
   sub: string;
   icon: React.ReactNode;
+  onClick?: () => void;
 }) {
   return (
-    <button className="card flex flex-col items-start gap-3 p-3.5 text-left active:scale-[0.98] transition">
+    <button
+      onClick={onClick}
+      className="card flex flex-col items-start gap-3 p-3.5 text-left active:scale-[0.98] transition"
+    >
       <IconTile tone={tone} size="md">
         {icon}
       </IconTile>

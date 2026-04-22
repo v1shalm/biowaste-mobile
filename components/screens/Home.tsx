@@ -28,8 +28,17 @@ export function HomeScreen({ verified = false }: { verified?: boolean } = {}) {
             </div>
           </div>
         </div>
-        <button className="relative flex h-10 w-10 items-center justify-center rounded-full bg-[color:var(--color-surface)] shadow-[var(--shadow-lift)] transition-transform active:scale-95">
-          <Icon.Alert
+        <button
+          onClick={() =>
+            nav?.showToast({
+              title: "2 new messages",
+              sub: "Dispatch · weather advisory for Brooklyn",
+              tone: "info",
+            })
+          }
+          className="relative flex h-10 w-10 items-center justify-center rounded-full bg-[color:var(--color-surface)] shadow-[var(--shadow-lift)] transition-transform active:scale-95"
+        >
+          <Icon.Bell
             width={18}
             height={18}
             style={{ color: "var(--color-ink)" }}

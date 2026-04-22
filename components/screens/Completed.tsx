@@ -114,7 +114,15 @@ export function CompletedScreen() {
       <div className="border-t border-[color:var(--color-hairline)] bg-[color:var(--color-surface)] px-4 pt-3 pb-3">
         <div className="grid grid-cols-[1fr_auto] gap-2">
           <button
-            onClick={() => nav?.go("stop-detail")}
+            onClick={() => {
+              nav?.completeStop();
+              nav?.showToast({
+                title: "Stop marked complete",
+                sub: "Memorial Hospital · 140 kg signed off",
+                tone: "brand",
+              });
+              nav?.go("stop-detail");
+            }}
             className="pill-cta text-white"
             style={{ background: "var(--color-brand)" }}
           >
@@ -122,7 +130,10 @@ export function CompletedScreen() {
             <Icon.ChevronRight width={18} height={18} />
           </button>
           <button
-            onClick={() => nav?.go("stops")}
+            onClick={() => {
+              nav?.completeStop();
+              nav?.go("stops");
+            }}
             className="flex h-14 px-5 items-center justify-center rounded-2xl bg-[color:var(--color-bg)] text-[14.5px] font-semibold transition-transform active:scale-95"
           >
             Break

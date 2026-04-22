@@ -110,6 +110,13 @@ export function StopDetailScreen() {
             </div>
             <div className="flex flex-shrink-0 gap-1.5">
               <button
+                onClick={() =>
+                  nav?.showToast({
+                    title: "Calling Rosa Garcia",
+                    sub: "Ext. 4410 · security gate",
+                    tone: "brand",
+                  })
+                }
                 className="flex h-10 w-10 items-center justify-center rounded-full transition-transform active:scale-95"
                 style={{ background: "var(--color-brand-50)" }}
                 aria-label="Call Rosa Garcia"
@@ -121,6 +128,13 @@ export function StopDetailScreen() {
                 />
               </button>
               <button
+                onClick={() =>
+                  nav?.showToast({
+                    title: "Message Rosa Garcia",
+                    sub: "Heads-up that you're on approach",
+                    tone: "info",
+                  })
+                }
                 className="flex h-10 w-10 items-center justify-center rounded-full bg-[color:var(--color-bg)] transition-transform active:scale-95"
                 aria-label="Message Rosa Garcia"
               >

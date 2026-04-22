@@ -31,16 +31,66 @@ export function InventoryScreen({
   verified: allMatched = false,
 }: { verified?: boolean } = {}) {
   const nav = useNav();
-  const resolvedAllMatched = nav ? nav.state.inventoryVerified : allMatched;
-  const items = resolvedAllMatched ? itemsAllMatched : itemsWithDiscrepancy;
+
+  // Resolve each item's live count: prefer nav overrides, else verified defaults, else the discrepancy set.
+  const baseline = nav
+    ? nav.state.inventoryVerified
+      ? itemsAllMatched
+      : itemsWithDiscrepancy
+    : allMatched
+    ? itemsAllMatched
+    : itemsWithDiscrepancy;
+
+  const items: InventoryItem[] = baseline.map((i) => ({
+    ...i,
+    counted: nav?.state.inventoryCounts[i.name] ?? i.counted,
+  }));
+
   const matched = items.filter((i) => i.counted === i.expected).length;
   const progress = Math.round((matched / items.length) * 100);
+  const resolvedAllMatched = matched === items.length;
+  const missingCount = items.length - matched;
+
+  function updateCount(item: InventoryItem, delta: number) {
+    const next = Math.max(0, item.counted + delta);
+    if (nav) {
+      nav.setInventoryCount(item.name, next);
+    }
+  }
 
   function handleConfirm() {
-    if (nav) {
-      nav.patchState({ inventoryVerified: true });
-      nav.go("home");
+    if (!nav) return;
+    if (!resolvedAllMatched) {
+      nav.showToast({
+        title: "Fix discrepancies first",
+        sub: `${missingCount} item${missingCount === 1 ? "" : "s"} still off`,
+        tone: "caution",
+      });
+      return;
     }
+    nav.patchState({ inventoryVerified: true });
+    nav.showToast({
+      title: "Inventory sealed",
+      sub: "Manifest ready for route R-402",
+      tone: "brand",
+    });
+    nav.go("home");
+  }
+
+  function handleScan() {
+    nav?.showToast({
+      title: "Barcode scanner opened",
+      sub: "Point camera at bin labels",
+      tone: "info",
+    });
+  }
+
+  function handleReport() {
+    nav?.showToast({
+      title: "Report sent to depot",
+      sub: "Sanitization kits flagged as short",
+      tone: "info",
+    });
   }
 
   return (
@@ -51,7 +101,10 @@ export function InventoryScreen({
         title="Inventory"
         subtitle="Verify today's manifest before you start the route."
         right={
-          <button className="flex h-9 px-3 items-center justify-center gap-1.5 rounded-full bg-[color:var(--color-bg)]">
+          <button
+            onClick={handleScan}
+            className="flex h-9 px-3 items-center justify-center gap-1.5 rounded-full bg-[color:var(--color-bg)] transition-transform active:scale-95"
+          >
             <Icon.Plus width={14} height={14} />
             <span className="text-[13px] font-semibold">Scan</span>
           </button>
@@ -80,7 +133,9 @@ export function InventoryScreen({
                       : "var(--color-caution-ink)",
                   }}
                 >
-                  {resolvedAllMatched ? "All items matched" : "1 discrepancy found"}
+                  {resolvedAllMatched
+                    ? "All items matched"
+                    : `${missingCount} discrepanc${missingCount === 1 ? "y" : "ies"} found`}
                 </span>
               </div>
               <div className="mt-1.5 flex items-baseline gap-1.5 tnum">
@@ -136,7 +191,12 @@ export function InventoryScreen({
 
         <div className="card overflow-hidden">
           {items.map((i) => (
-            <ItemRow key={i.name} {...i} />
+            <ItemRow
+              key={i.name}
+              {...i}
+              onDecrement={() => updateCount(i, -1)}
+              onIncrement={() => updateCount(i, +1)}
+            />
           ))}
         </div>
 
@@ -188,11 +248,14 @@ export function InventoryScreen({
             <>
               <span className="text-[13px] text-[color:var(--color-ink-2)]">
                 <span className="font-semibold text-[color:var(--color-ink)]">
-                  Sanitization kits
+                  {missingCount} item{missingCount === 1 ? "" : "s"}
                 </span>{" "}
-                short by 1
+                still off
               </span>
-              <button className="inline-flex items-center gap-1 text-[13px] font-semibold text-[color:var(--color-info)]">
+              <button
+                onClick={handleReport}
+                className="inline-flex items-center gap-1 text-[13px] font-semibold text-[color:var(--color-info)] transition-transform active:scale-95"
+              >
                 Report
                 <Icon.ChevronRight width={12} height={12} />
               </button>
@@ -220,12 +283,16 @@ function ItemRow({
   expected,
   counted,
   hazard,
+  onDecrement,
+  onIncrement,
 }: {
   name: string;
   unit: string;
   expected: number;
   counted: number;
   hazard?: "red" | "yellow" | "sharps";
+  onDecrement?: () => void;
+  onIncrement?: () => void;
 }) {
   const match = counted === expected;
   const dot =
@@ -254,14 +321,16 @@ function ItemRow({
 
       <div className="flex items-center gap-1.5">
         <button
-          className="flex h-9 w-9 items-center justify-center rounded-full bg-[color:var(--color-bg)] active:scale-95 transition"
-          aria-label="decrease"
+          onClick={onDecrement}
+          disabled={counted === 0}
+          className="flex h-9 w-9 items-center justify-center rounded-full bg-[color:var(--color-bg)] active:scale-95 transition disabled:opacity-40"
+          aria-label={`Decrease ${name}`}
         >
           <Icon.Minus width={14} height={14} style={{ color: "var(--color-ink)" }} />
         </button>
         <div
           className={
-            "min-w-[48px] rounded-full px-2 py-1.5 text-center tnum text-[15px] font-semibold " +
+            "min-w-[48px] rounded-full px-2 py-1.5 text-center tnum text-[15px] font-semibold transition-colors " +
             (match
               ? "bg-[color:var(--color-bg)] text-[color:var(--color-ink)]"
               : "bg-[color:var(--color-caution-50)] text-[color:var(--color-caution-ink)]")
@@ -270,8 +339,9 @@ function ItemRow({
           {counted}
         </div>
         <button
+          onClick={onIncrement}
           className="flex h-9 w-9 items-center justify-center rounded-full bg-[color:var(--color-bg)] active:scale-95 transition"
-          aria-label="increase"
+          aria-label={`Increase ${name}`}
         >
           <Icon.Plus width={14} height={14} style={{ color: "var(--color-ink)" }} />
         </button>

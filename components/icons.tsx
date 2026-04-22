@@ -31,6 +31,7 @@ import {
   Star,
   ShieldCheck,
   Path,
+  Bell,
 } from "@phosphor-icons/react/dist/ssr";
 
 /*
@@ -91,6 +92,7 @@ export const Icon = {
   Shield: wrap(ShieldCheck, "fill"),
   Nav: wrap(NavigationArrow, "fill"),
   Route: wrap(Path),
+  Bell: wrap(Bell, "fill"),
 
   /* iOS status bar — custom to match Apple's exact proportions */
   Signal: (p: SVGProps<SVGSVGElement>) => (

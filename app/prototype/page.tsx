@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { Icon } from "@/components/icons";
 import {
@@ -8,7 +8,9 @@ import {
   type NavContextValue,
   type PrototypeScreen,
   type PrototypeState,
+  type ToastMessage,
 } from "@/components/NavContext";
+import { Toast } from "@/components/Toast";
 import { HomeScreen } from "@/components/screens/Home";
 import { StopsScreen } from "@/components/screens/Stops";
 import { StopDetailScreen } from "@/components/screens/StopDetail";
@@ -19,20 +21,24 @@ import { SupportScreen } from "@/components/screens/Support";
 
 const initialState: PrototypeState = {
   inventoryVerified: false,
-  stopsMidService: false,
   stopsCompleted: 0,
+  inventoryCounts: {},
 };
 
 export default function PrototypePage() {
   const [screen, setScreen] = useState<PrototypeScreen>("home");
   const [history, setHistory] = useState<PrototypeScreen[]>([]);
   const [state, setState] = useState<PrototypeState>(initialState);
+  const [toast, setToast] = useState<ToastMessage | null>(null);
+  const toastIdRef = useRef(0);
 
-  const go = useCallback((next: PrototypeScreen) => {
-    setHistory((h) => [...h, screen].slice(-20));
-    setScreen(next);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [screen]);
+  const go = useCallback(
+    (next: PrototypeScreen) => {
+      setHistory((h) => [...h, screen].slice(-20));
+      setScreen(next);
+    },
+    [screen]
+  );
 
   const back = useCallback(() => {
     setHistory((h) => {
@@ -47,21 +53,51 @@ export default function PrototypePage() {
     setState((s) => ({ ...s, ...patch }));
   }, []);
 
+  const setInventoryCount = useCallback((name: string, count: number) => {
+    setState((s) => ({
+      ...s,
+      inventoryCounts: { ...s.inventoryCounts, [name]: count },
+    }));
+  }, []);
+
+  const completeStop = useCallback(() => {
+    setState((s) => ({
+      ...s,
+      stopsCompleted: Math.min(s.stopsCompleted + 1, 11),
+    }));
+  }, []);
+
+  const showToast = useCallback((m: Omit<ToastMessage, "id">) => {
+    toastIdRef.current += 1;
+    setToast({ ...m, id: toastIdRef.current });
+  }, []);
+
   const reset = useCallback(() => {
     setScreen("home");
     setHistory([]);
     setState(initialState);
-  }, []);
+    setToast(null);
+    showToast({ title: "Prototype reset", tone: "info" });
+  }, [showToast]);
 
   const navValue: NavContextValue = useMemo(
-    () => ({ current: screen, go, back, state, patchState }),
-    [screen, go, back, state, patchState]
+    () => ({
+      current: screen,
+      go,
+      back,
+      state,
+      patchState,
+      setInventoryCount,
+      completeStop,
+      showToast,
+      toast,
+    }),
+    [screen, go, back, state, patchState, setInventoryCount, completeStop, showToast, toast]
   );
 
   return (
     <main className="min-h-screen">
-      {/* Top chrome */}
-      <header className="flex items-center justify-between px-8 py-5 border-b border-[color:var(--color-hairline)] bg-[color:var(--color-surface)]">
+      <header className="flex items-center justify-between border-b border-[color:var(--color-hairline)] bg-[color:var(--color-surface)] px-8 py-5">
         <div className="flex items-center gap-3">
           <div
             className="flex h-9 w-9 items-center justify-center rounded-xl"
@@ -102,18 +138,17 @@ export default function PrototypePage() {
         </div>
       </header>
 
-      {/* Phone stage */}
       <div className="flex min-h-[calc(100vh-74px)] flex-col items-center justify-center gap-8 py-10">
         <div className="phone-frame">
           <div className="phone-notch" />
           <div className="phone-screen">
             <NavContext.Provider value={navValue}>
               {renderScreen(screen)}
+              <Toast toast={toast} />
             </NavContext.Provider>
           </div>
         </div>
 
-        {/* Tiny state readout for the prototype driver — below the phone, not inside */}
         <div className="flex items-center gap-4 text-[12px] text-[color:var(--color-ink-3)] tnum">
           <span>
             Screen: <b className="text-[color:var(--color-ink)]">{screen}</b>
@@ -123,6 +158,13 @@ export default function PrototypePage() {
             Inventory:{" "}
             <b className="text-[color:var(--color-ink)]">
               {state.inventoryVerified ? "verified" : "pending"}
+            </b>
+          </span>
+          <span className="h-1 w-1 rounded-full bg-[color:var(--color-ink-4)]" />
+          <span>
+            Stops:{" "}
+            <b className="text-[color:var(--color-ink)]">
+              {state.stopsCompleted} / 11
             </b>
           </span>
           <span className="h-1 w-1 rounded-full bg-[color:var(--color-ink-4)]" />
