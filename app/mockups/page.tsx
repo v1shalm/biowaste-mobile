@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { Icon } from "@/components/icons";
 import { Mockup } from "@/components/Mockup";
+import { MockupTrio } from "@/components/MockupTrio";
 import { HomeScreen } from "@/components/screens/Home";
 import { StopsScreen } from "@/components/screens/Stops";
 import { StopDetailScreen } from "@/components/screens/StopDetail";
@@ -32,6 +33,36 @@ const mockups: { title: string; screen: ReactNode }[] = [
   { title: "Navigation", screen: <MapScreen /> },
   { title: "Stop complete", screen: <CompletedScreen /> },
   { title: "Support", screen: <SupportScreen /> },
+];
+
+const trios: {
+  title: string;
+  screens: [ReactNode, ReactNode, ReactNode];
+}[] = [
+  {
+    title: "Flow — Starting the shift",
+    screens: [
+      <HomeScreen key="h1" />,
+      <InventoryScreen key="i1" verified />,
+      <HomeScreen key="h2" verified />,
+    ],
+  },
+  {
+    title: "Flow — Servicing a stop",
+    screens: [
+      <StopsScreen key="s1" />,
+      <StopDetailScreen key="sd" />,
+      <CompletedScreen key="c" />,
+    ],
+  },
+  {
+    title: "Flow — On the road",
+    screens: [
+      <HomeScreen key="h3" verified />,
+      <MapScreen key="m" />,
+      <StopDetailScreen key="sd2" />,
+    ],
+  },
 ];
 
 export default function MockupsPage() {
@@ -66,6 +97,48 @@ export default function MockupsPage() {
       </header>
 
       <div className="mx-auto max-w-[1440px] px-10 pb-20">
+        {/* Flow pairings — three-screen trios */}
+        <div className="mb-8 flex items-baseline justify-between">
+          <div>
+            <div className="text-[12.5px] font-semibold text-[color:var(--color-ink-3)]">
+              Flow pairings
+            </div>
+            <h2 className="mt-1 text-[22px] font-bold tracking-[-0.02em]">
+              Three screens, one story
+            </h2>
+          </div>
+          <span className="tnum text-[12px] text-[color:var(--color-ink-3)]">
+            {trios.length} flows
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 gap-8">
+          {trios.map((t, i) => (
+            <MockupTrio
+              key={t.title}
+              title={`${String(i + 1).padStart(2, "0")} · ${t.title}`}
+              screens={t.screens.map((s, idx) => (
+                <PhoneFrame key={idx}>{s}</PhoneFrame>
+              )) as [ReactNode, ReactNode, ReactNode]}
+            />
+          ))}
+        </div>
+
+        {/* Single-screen gallery */}
+        <div className="mt-16 mb-8 flex items-baseline justify-between">
+          <div>
+            <div className="text-[12.5px] font-semibold text-[color:var(--color-ink-3)]">
+              Single screens
+            </div>
+            <h2 className="mt-1 text-[22px] font-bold tracking-[-0.02em]">
+              Every screen, solo
+            </h2>
+          </div>
+          <span className="tnum text-[12px] text-[color:var(--color-ink-3)]">
+            {mockups.length} mockups
+          </span>
+        </div>
+
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
           {mockups.map((m, i) => (
             <Mockup key={m.title} title={`${String(i + 1).padStart(2, "0")} · ${m.title}`}>
@@ -77,7 +150,7 @@ export default function MockupsPage() {
         <div className="mt-16 flex flex-wrap items-center justify-between gap-4 border-t border-[color:var(--color-hairline)] pt-6 text-[color:var(--color-ink-3)]">
           <span className="text-[13px] font-semibold">End of gallery</span>
           <span className="tnum text-[12.5px]">
-            10 mockups · PNG export at 3×
+            {mockups.length + trios.length} mockups · PNG export at 2×
           </span>
         </div>
       </div>
