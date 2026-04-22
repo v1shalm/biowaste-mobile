@@ -32,6 +32,11 @@ import {
   ShieldCheck,
   Path,
   Bell,
+  Backspace,
+  Fingerprint,
+  GasPump,
+  Gauge,
+  Wrench,
 } from "@phosphor-icons/react/dist/ssr";
 
 /*
@@ -93,6 +98,11 @@ export const Icon = {
   Nav: wrap(NavigationArrow, "fill"),
   Route: wrap(Path),
   Bell: wrap(Bell, "fill"),
+  Backspace: wrap(Backspace),
+  Fingerprint: wrap(Fingerprint),
+  Fuel: wrap(GasPump, "fill"),
+  Gauge: wrap(Gauge),
+  Wrench: wrap(Wrench, "fill"),
 
   /* iOS status bar — custom to match Apple's exact proportions */
   Signal: (p: SVGProps<SVGSVGElement>) => (

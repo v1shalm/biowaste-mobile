@@ -3,6 +3,10 @@
 import { createContext, useContext } from "react";
 
 export type PrototypeScreen =
+  | "splash"
+  | "login"
+  | "truck-select"
+  | "odometer"
   | "home"
   | "stops"
   | "stop-detail"

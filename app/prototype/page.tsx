@@ -11,6 +11,10 @@ import {
   type ToastMessage,
 } from "@/components/NavContext";
 import { Toast } from "@/components/Toast";
+import { SplashScreen } from "@/components/screens/Splash";
+import { LoginScreen } from "@/components/screens/Login";
+import { TruckSelectionScreen } from "@/components/screens/TruckSelection";
+import { OdometerScreen } from "@/components/screens/Odometer";
 import { HomeScreen } from "@/components/screens/Home";
 import { StopsScreen } from "@/components/screens/Stops";
 import { StopDetailScreen } from "@/components/screens/StopDetail";
@@ -26,7 +30,7 @@ const initialState: PrototypeState = {
 };
 
 export default function PrototypePage() {
-  const [screen, setScreen] = useState<PrototypeScreen>("home");
+  const [screen, setScreen] = useState<PrototypeScreen>("splash");
   const [history, setHistory] = useState<PrototypeScreen[]>([]);
   const [state, setState] = useState<PrototypeState>(initialState);
   const [toast, setToast] = useState<ToastMessage | null>(null);
@@ -73,12 +77,18 @@ export default function PrototypePage() {
   }, []);
 
   const reset = useCallback(() => {
-    setScreen("home");
+    setScreen("splash");
     setHistory([]);
     setState(initialState);
     setToast(null);
-    showToast({ title: "Prototype reset", tone: "info" });
-  }, [showToast]);
+  }, []);
+
+  const skipToHome = useCallback(() => {
+    setScreen("home");
+    setHistory([]);
+    setState({ ...initialState, inventoryVerified: false });
+    setToast(null);
+  }, []);
 
   const navValue: NavContextValue = useMemo(
     () => ({
@@ -115,6 +125,12 @@ export default function PrototypePage() {
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <button
+            onClick={skipToHome}
+            className="inline-flex items-center gap-1.5 rounded-full border border-[color:var(--color-hairline)] bg-[color:var(--color-surface)] px-3.5 py-2 text-[12.5px] font-semibold text-[color:var(--color-ink)] transition hover:bg-[color:var(--color-bg)] active:scale-95"
+          >
+            Skip to home
+          </button>
           <button
             onClick={reset}
             className="inline-flex items-center gap-1.5 rounded-full border border-[color:var(--color-hairline)] bg-[color:var(--color-surface)] px-3.5 py-2 text-[12.5px] font-semibold text-[color:var(--color-ink)] transition hover:bg-[color:var(--color-bg)] active:scale-95"
@@ -179,6 +195,14 @@ export default function PrototypePage() {
 
 function renderScreen(screen: PrototypeScreen) {
   switch (screen) {
+    case "splash":
+      return <SplashScreen />;
+    case "login":
+      return <LoginScreen />;
+    case "truck-select":
+      return <TruckSelectionScreen />;
+    case "odometer":
+      return <OdometerScreen />;
     case "home":
       return <HomeScreen />;
     case "stops":
